@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="./ckeditor/ckeditor.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+</head>
+<body>
+  
+    
+    
+    <div  id="editor1"></div>  
+    <div class="content-footer">
+        <button id="btn-export" onclick="exportHTML();">Export to
+            word doc
+        </button>
+    </div>
+    <input type="text" id="findText1" py-keyup="reg()"> 
+</body>
+
+</html>
+<script src="main.js"></script>
+<link rel="stylesheet" href="style.css">
+<script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+<py-script>
+import re
+from js import getValueOfInput, insertjs, options,setFind
+def reg():
+  try:
+    st1 = str(getValueOfInput().str1)
+    desc = str(getValueOfInput().desc)
+    
+    text = Element('findText1').element.value
+    index = 0
+    n_openbrackets = [
+      index for index in range(len(text))
+      if text.startswith('[', index) or text.startswith('(', index) or text.startswith('{', index)
+    ]
+    n_closebrackets = [
+      index for index in range(len(text))
+      if text.startswith(']', index) or text.startswith(')', index) or text.startswith('}', index)
+    ]
+    check = 0
+    for i in range(len(text)-1):
+      if text[i] == "\\" and text[i+1] == "(" or text[i+1] == ")" or text[i+1] == "["or text[i+1] == "]"or text[i+1] == "{"or text[i+1] == "}"or text[i+1] == "\\":
+        check = 1
+    if(len(n_openbrackets) == len(n_closebrackets)):
+        check = 1
+    cnt_brackets = [
+      index for index in range(len(text))
+      if text.startswith('[', index) or text.startswith('(', index) or text.startswith('{', index) or text.startswith(']', index) or text.startswith(')', index) or text.startswith('}', index) or text.startswith('\\', index)
+    ]
+    if (check == 1) :
+      if text != '':
+          if text[0] !='*':
+            x = re.finditer(text, st1,re.I)       
+            for match_obj in x:
+              end = match_obj.end()
+              start = match_obj.start()
+              desc = insertjs(desc,options('find').opt_end,end+index)
+              desc = insertjs(desc,options('find').opt_sta,start+index)
+              index = index+options('find').num
+      
+    setFind(desc)
+  except :
+    print('lỗi')
+</py-script>
